@@ -9,6 +9,8 @@ public abstract class Bullet : MonoBehaviour
     [Header("Base Settings")]
     [SerializeField] protected float TravelSpeed = .25f;
     [SerializeField] protected float TravelTime = .25f;
+    [SerializeField] protected ParticleSystem impactParticles;
+    [SerializeField] protected AudioClip impactSound;
     float timer = 0f;
     [SerializeField] protected Rigidbody RB;
 
@@ -18,6 +20,7 @@ public abstract class Bullet : MonoBehaviour
         Impact(collision);
     }
 
+    
     private void FixedUpdate()
     {
         if (timer < TravelTime)

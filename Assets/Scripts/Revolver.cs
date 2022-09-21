@@ -8,9 +8,20 @@ public class Revolver : Bullet
     Enemy hitEnemy = null;
     protected override void Impact(Collision collision)
     {
-        if (collision.gameObject.tag == "Enemy") {
-            //TODO add damage to boss and pillars once implemented
+        Health hp = collision.gameObject.GetComponent<Health>();
+        if (impactParticles != null)
+        {
+            impactParticles = Instantiate(impactParticles, transform.position, Quaternion.identity);
         }
+        if (impactSound != null)
+        {
+            AudioHelper.PlayClip2D(impactSound, 1f);
+        }
+        
+        if ( hp != null) {
+            hp.ChangeHealth(-damage);
+        }
+        Destroy(this.gameObject);
     }
 
 } 

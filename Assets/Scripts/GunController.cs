@@ -7,17 +7,31 @@ public class GunController : MonoBehaviour
     [SerializeField] float Speed = .25f;
     [SerializeField] GameObject gun = null;
     [SerializeField] GameObject curLock = null;
+    [SerializeField] ParticleSystem shootParticles;
+    [SerializeField] AudioClip shootSound;
+    [SerializeField] GameObject curGun;
+    [SerializeField] GameObject bulletStart;
+    Vector3 targetPos;
+    Quaternion targetRot;
     Rigidbody rb = null;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
+    {
+        if (Input.GetKeyDown("space"))
+        {
+            Fire();
+
+        }
+    }
+    void FixedUpdate()
     {
         MovePlayer();
         TurnGun();
+        
     }
 
     private void MovePlayer() 
@@ -48,5 +62,23 @@ public class GunController : MonoBehaviour
 
         }
     
+    }
+    public void Fire()
+    {
+        targetPos = bulletStart.transform.position;
+        targetRot = bulletStart.transform.rotation;
+        if (shootParticles != null)
+        {
+            Instantiate(shootParticles, targetPos, targetRot);
+        }
+        if (shootSound != null)
+        {
+            AudioHelper.PlayClip2D(shootSound, 1f);
+        }
+        if (curGun != null)
+        {
+
+            Instantiate(curGun, targetPos, targetRot);
+        }
     }
 }

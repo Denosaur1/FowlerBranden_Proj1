@@ -20,17 +20,19 @@ public class Enemy : MonoBehaviour
     {
         Player player = other.gameObject.GetComponent<Player>();
         if (player != null) {
-            PlayerImpact(player);
+            //PlayerImpact(player);
             ImpactFeedback();
         
         
         }
 
     }
+    /*
     protected virtual void PlayerImpact(Player player) {
         player.DecreaseHealth(damageAmount);
     
     }
+    */
     private void ImpactFeedback() {
 
         if (impactParticles != null) { 

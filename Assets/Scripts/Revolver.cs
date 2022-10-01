@@ -5,7 +5,7 @@ using UnityEngine;
 public class Revolver : Bullet
 {
     [SerializeField] int damage = 1;
-    Enemy hitEnemy = null;
+    
     protected override void Impact(Collision collision)
     {
         Health hp = collision.gameObject.GetComponent<Health>();

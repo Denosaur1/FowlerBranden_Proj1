@@ -51,7 +51,7 @@ public class GunController : MonoBehaviour
 
     }
     private void TurnGun() {
-
+        
         if (curLock != null)
         {
 
@@ -61,7 +61,9 @@ public class GunController : MonoBehaviour
             gun.transform.rotation.Set(0,0,0,0);
 
         }
-    
+        
+        
+
     }
     public void Fire()
     {

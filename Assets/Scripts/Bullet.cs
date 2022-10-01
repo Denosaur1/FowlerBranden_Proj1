@@ -16,8 +16,11 @@ public abstract class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Projectile collision!");
-        Impact(collision);
+        if (collision.gameObject.name != "Player")
+        {
+            Debug.Log("Projectile collision!");
+            Impact(collision);
+        }
     }
 
     

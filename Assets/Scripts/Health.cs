@@ -10,7 +10,7 @@ public class Health : MonoBehaviour, IDamageable
     public AudioClip deathSound;
     public ParticleSystem hurtParticles;
     public AudioClip hurtSound;
-    
+    [SerializeField] DeathEffect deathEffect;
     public void Awake()
     {
        
@@ -40,7 +40,7 @@ public class Health : MonoBehaviour, IDamageable
     
     public void Kill()
     {
-        gameObject.SetActive(false);
+        
         if (deathParticles != null)
         {
             deathParticles = Instantiate(deathParticles, transform.position, Quaternion.identity);
@@ -48,6 +48,14 @@ public class Health : MonoBehaviour, IDamageable
         if (deathSound != null)
         {
             AudioHelper.PlayClip2D(deathSound, 1f);
+        }
+        if (deathEffect != null)
+        {
+            deathEffect.Death();
+
+        }
+        else {
+            gameObject.SetActive(false);
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UI;
 using UnityEngine;
 
 
@@ -7,14 +8,20 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] int damageAmount = 1;
-    [SerializeField] public int heath = 1;
+   
+    [SerializeField] public float speed = 1f;
     [SerializeField] ParticleSystem impactParticles;
     [SerializeField] AudioClip impactSound;
-
+    GameObject Player;
+   
     Rigidbody rb;
+    Health hp;
     void Awake()
     {
+        hp = GetComponent<Health>();
         rb = GetComponent<Rigidbody>();
+        Player = GameObject.Find("Player");
+        
     }
     private void OnCollisionEnter(Collision other)
     {
@@ -22,7 +29,7 @@ public class Enemy : MonoBehaviour
         if (player != null) {
             //PlayerImpact(player);
             ImpactFeedback();
-        
+            
         
         }
 
@@ -47,11 +54,12 @@ public class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
-        if(heath < 0) { gameObject.SetActive(false); }
+        
     }
     public void Move()
     {
-        
+        transform.LookAt(Player.transform);
+        transform.position =Vector3.MoveTowards(transform.position,Player.transform.position, speed *Time.deltaTime);
     }
     
 

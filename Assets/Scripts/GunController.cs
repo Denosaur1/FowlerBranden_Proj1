@@ -14,6 +14,7 @@ public class GunController : MonoBehaviour
     Vector3 targetPos;
     Quaternion targetRot;
     Rigidbody rb = null;
+    bool locked = true;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -26,6 +27,12 @@ public class GunController : MonoBehaviour
             Fire();
 
         }
+        if (Input.GetKeyDown(KeyCode.E)) {
+            locked = !locked;
+        
+        
+        }
+
     }
     void FixedUpdate()
     {
@@ -52,13 +59,14 @@ public class GunController : MonoBehaviour
     }
     private void TurnGun() {
         
-        if (curLock != null)
+        if (curLock != null && locked)
         {
-
-            gun.transform.LookAt(curLock.transform);
+            
+            Vector3 position = new Vector3(curLock.transform.position.x, 0.5f, curLock.transform.position.z);
+            gun.transform.LookAt(position);
         }
         else {
-            gun.transform.rotation.Set(0,0,0,0);
+            gun.transform.rotation = Quaternion.Euler(0, 0.5f, 0);
 
         }
         

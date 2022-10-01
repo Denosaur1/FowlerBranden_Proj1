@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Health : MonoBehaviour, IDamageable
 {
@@ -11,15 +12,26 @@ public class Health : MonoBehaviour, IDamageable
     public ParticleSystem hurtParticles;
     public AudioClip hurtSound;
     [SerializeField] DeathEffect deathEffect;
+    [SerializeField] Slider healthBar;
     public void Awake()
     {
        
         curHealth = maxHealth;
+        if (healthBar) {
+            healthBar.maxValue = maxHealth;
+            healthBar.value = curHealth;
+
+        }
     }
     public void ChangeHealth(int amount)
     {
         curHealth += amount;
-        
+        if (healthBar)
+        {
+            healthBar.value = curHealth;
+
+
+        }
         Debug.Log(gameObject.name + "'s Current Heath: " + curHealth);
         curHealth = Mathf.Clamp(curHealth, 0, maxHealth);
         if (amount < 0) {

@@ -12,11 +12,7 @@ public class Player : MonoBehaviour
   
     //public bool damageProof = false;
   
-    [SerializeField] int maxHealth = 3;
-
-    public int MaxHealth {
-        get { return maxHealth; }
-    }
+   
   
     
     [SerializeField] public GameObject[] playerArt; 
@@ -39,7 +35,7 @@ public class Player : MonoBehaviour
         health = GetComponent<Health>();
         if (deathParticles != null) { deathParticles = health.deathParticles; }
         if (deathSound != null) {deathSound = health.deathSound;}
-        health.maxHealth = maxHealth;
+        
     }
 
    

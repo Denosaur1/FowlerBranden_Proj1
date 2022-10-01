@@ -369,11 +369,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6063049953370476463}
-  - component: {fileID: 4794810885104846750}
   - component: {fileID: 2499552404792456035}
   - component: {fileID: -3871735072616746793}
   - component: {fileID: 2878077047190730769}
   - component: {fileID: 5694738155895048545}
+  - component: {fileID: 4292708819809291168}
   m_Layer: 0
   m_Name: Minion
   m_TagString: Untagged
@@ -390,28 +390,12 @@ Transform:
   m_GameObject: {fileID: 6876881610640774421}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 2964023678752085560}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &4794810885104846750
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6876881610640774421}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!114 &2499552404792456035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,9 +409,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageAmount: 1
-  heath: 1
+  speed: 3.5
   impactParticles: {fileID: 0}
   impactSound: {fileID: 0}
+  cameraShake: {fileID: 4807207398490244933, guid: 03d0e8a9d239eb446a5908279b908b96, type: 3}
 --- !u!65 &-3871735072616746793
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -454,12 +439,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curHealth: 0
-  maxHealth: 2
+  maxHealth: 1
   deathParticles: {fileID: 0}
   deathSound: {fileID: 0}
   hurtParticles: {fileID: 0}
   hurtSound: {fileID: 0}
   deathEffect: {fileID: 5694738155895048545}
+  healthBar: {fileID: 0}
 --- !u!114 &5694738155895048545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -472,6 +458,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e22e4e187eed2941b466333c69ce972, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!195 &4292708819809291168
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6876881610640774421}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 20
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &7734009138804895014
 GameObject:
   m_ObjectHideFlags: 0

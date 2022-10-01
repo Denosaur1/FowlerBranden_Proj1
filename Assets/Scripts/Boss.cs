@@ -14,6 +14,7 @@ public class Boss : MonoBehaviour
     [Header("Boss Stats")]
     [SerializeField] int maxHealth = 10;
     [SerializeField] float speed = 1f;
+    [SerializeField] int damage = -1;
     [SerializeField] float chargeSpeed = 1f;
     [SerializeField] float actionTime = 10f;
     [SerializeField] float actionTimer = 0f;
@@ -26,6 +27,8 @@ public class Boss : MonoBehaviour
     [SerializeField] GameObject Jaw = null;
     [SerializeField] Transform target = null;
     [SerializeField] GameObject targetImage = null;
+    [SerializeField] GameObject HealthBarBack = null;
+    [SerializeField] CameraShake cameraShake;
     //hidden variables
     //set through code
     public GameObject curTarget;
@@ -59,11 +62,13 @@ public class Boss : MonoBehaviour
     [Header("Swiping Settings")]
     [SerializeField] int SwipingWeight = 1;
     [SerializeField] float SwipingTime = 1;
+    //[SerializeField] AudioClip swipeSound;
     MoveData Swipe;
     [Header("Slam Settings")]
     [SerializeField] int SlamWeightClose = 1;
     [SerializeField] int SlamWeightFar = 1;
     [SerializeField] float SlamTime = 1;
+    [SerializeField] AudioClip slamSound;
     MoveData Slam;
 
     //Far Attacks
@@ -71,10 +76,16 @@ public class Boss : MonoBehaviour
     [SerializeField] int ChargingWeight = 1;
     [SerializeField] float ChargingTime = 1;
     MoveData Charge;
-    [Header("Eat Settings (TODO)")]
+    [Header("Eat Settings")]
     [SerializeField] int EatWeight = 1;
     [SerializeField] float EatTime = 1;
+    [SerializeField] AudioClip eatSound;
     MoveData Eat;
+
+
+    
+    [SerializeField] AudioClip targetSound;
+
     public struct MoveData {
         public string moveName;
         public float timer;
@@ -96,6 +107,7 @@ public class Boss : MonoBehaviour
         curSpeed = speed;
         agent.speed = curSpeed;
         health = GetComponent<Health>();
+        cameraShake = Camera.main.GetComponent<CameraShake>();
         if (deathParticles != null) { health.deathParticles = deathParticles; }
         if (deathSound != null) { health.deathSound = deathSound; }
         health.maxHealth = maxHealth;
@@ -107,9 +119,10 @@ public class Boss : MonoBehaviour
         curHealth = health.curHealth;
         if (!Enrage)
         {
-            if (curHealth < (maxHealth / 2))
+            if (curHealth <= (maxHealth / 2))
             {
                 ChangeAction("Enrage", -1f);
+               
             }
         }
         
@@ -128,6 +141,7 @@ public class Boss : MonoBehaviour
             if (collision.gameObject.name == "Player")
             {
                 Debug.Log("PLAYER Collided");
+                HitPlayer(collision.gameObject);
                 ChangeAction("Idle", 0f);
                 if (curTarget != null) { Destroy(curTarget); }
 
@@ -386,24 +400,27 @@ public class Boss : MonoBehaviour
     void Slamming()
     {
 
-        if (!playerHit)
-        {
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 3);
-            foreach (var hitCollider in hitColliders)
+      
+
+
+        if (Animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
+            if (slamSound != null)
             {
-                if (hitCollider.gameObject.name == "Player")
-                {
-                    Debug.Log("PLAYER Slammed");
-                    playerHit = true;
-
-                }
-
+                AudioHelper.PlayClip2D(slamSound, 1f);
             }
-        }
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 3);
+                foreach (var hitCollider in hitColliders)
+                {
+                    if (hitCollider.gameObject.name == "Player" && !playerHit)
+                    {
+                        Debug.Log("PLAYER Slammed");
+                        HitPlayer(hitCollider.gameObject);
+                        playerHit = true;
 
+                    }
 
-        if (Animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-        {
+               
+            }
             int randMinion = Random.Range(1, 3);
             
             SpawnMinons(randMinion);
@@ -415,6 +432,9 @@ public class Boss : MonoBehaviour
     }
     void Swiping()
     {
+        
+
+
         if (!playerHit)
         {
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, 3);
@@ -423,6 +443,7 @@ public class Boss : MonoBehaviour
                 if (hitCollider.gameObject.name == "Player")
                 {
                     Debug.Log("PLAYER HIT");
+                    HitPlayer(hitCollider.gameObject);
                     playerHit = true;
 
                 }
@@ -443,7 +464,7 @@ public class Boss : MonoBehaviour
   
         //Is he Hungry -> less than half health?
         //yes
-        if (curHealth <= maxHealth / 2)
+        if (curHealth < maxHealth / 2)
         {
             //Is there food
             //yes
@@ -482,9 +503,17 @@ public class Boss : MonoBehaviour
                         if (!curTarget){
                             Debug.Log(currentMinion + " Exists!");
                             curTarget = Instantiate<GameObject>(targetImage, currentMinion.transform.position, Quaternion.identity);
-                        } else { curTarget.transform.position = currentMinion.transform.position; }
+                        if (targetSound != null)
+                        {
+                            AudioHelper.PlayClip2D(targetSound, 1f);
+                        }
+                    } else { curTarget.transform.position = currentMinion.transform.position; }
                         if (agent.remainingDistance <= 1){
-                            playerHit = false;
+                        if (eatSound != null)
+                        {
+                            AudioHelper.PlayClip2D(eatSound, 1f);
+                        }
+                        playerHit = false;
                             Destroy(curTarget);
                             Destroy(currentMinion);
                             MinionList.Remove(currentMinion);
@@ -517,7 +546,8 @@ public class Boss : MonoBehaviour
 
     }
     void Enraging() {
-        
+
+      
         if (!Enrage)
         {
             bossCol.enabled = !bossCol.enabled;
@@ -532,7 +562,8 @@ public class Boss : MonoBehaviour
         }
         if (Animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
-
+            
+            if (HealthBarBack) { HealthBarBack.SetActive(false); }
             bossCol.enabled = !bossCol.enabled;
             
             playerHit = false;
@@ -555,13 +586,13 @@ public class Boss : MonoBehaviour
         {
             for (int i = 0; i < amount; i++)
             {
-                GameObject newMinion = Instantiate(minion, new Vector3(Random.Range(-15, 30), 0.5f, Random.Range(-7, 30)), Quaternion.identity);
+                GameObject newMinion = Instantiate(minion, new Vector3(Random.Range(-15, 15), 10f, Random.Range(-15, 15)), Quaternion.identity);
               
                 MinionList.Add(newMinion);
                 for (int b = 0; b < MinionList.Count; b++)
                 {
                     MinionList[b].name = b.ToString();
-
+                    
                 }
             }
         }
@@ -571,7 +602,23 @@ public class Boss : MonoBehaviour
     }
 
 
-    
+    void HitPlayer(GameObject hitPlayer) {
+
+
+        Health hp = hitPlayer.GetComponent<Health>();
+        if (hp != null){
+            
+            hp.ChangeHealth(-damage);
+            if (cameraShake) {
+                StartCoroutine(cameraShake.Shake(.5f, .1f)); 
+           
+            }
+
+        }
+
+
+
+    }
 
   
 

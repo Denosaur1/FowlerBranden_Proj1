@@ -18,6 +18,7 @@ public class Boss : MonoBehaviour
     [SerializeField] float chargeSpeed = 1f;
     [SerializeField] float actionTime = 10f;
     [SerializeField] float actionTimer = 0f;
+    [SerializeField] float ragePercent = .5f;
     
     
     [Header("Initial additives")]
@@ -27,7 +28,7 @@ public class Boss : MonoBehaviour
     [SerializeField] GameObject Jaw = null;
     [SerializeField] Transform target = null;
     [SerializeField] GameObject targetImage = null;
-    [SerializeField] GameObject HealthBarBack = null;
+    [SerializeField] RectTransform HealthBarBack = null;
     [SerializeField] CameraShake cameraShake;
     //hidden variables
     //set through code
@@ -68,7 +69,7 @@ public class Boss : MonoBehaviour
     [SerializeField] int SlamWeightClose = 1;
     [SerializeField] int SlamWeightFar = 1;
     [SerializeField] float SlamTime = 1;
-    [SerializeField] AudioClip slamSound;
+    //[SerializeField] AudioClip slamSound;
     MoveData Slam;
 
     //Far Attacks
@@ -119,7 +120,7 @@ public class Boss : MonoBehaviour
         curHealth = health.curHealth;
         if (!Enrage)
         {
-            if (curHealth <= (maxHealth / 2))
+            if (curHealth <= (maxHealth * ragePercent))
             {
                 ChangeAction("Enrage", -1f);
                
@@ -375,7 +376,7 @@ public class Boss : MonoBehaviour
         {
             curTarget = Instantiate<GameObject>(targetImage, chargeTarget, Quaternion.identity);
         }
-        if (agent.remainingDistance <= 1)
+        if (agent.remainingDistance <= 5)
         {
 
             ChangeAction("Idle", .5f);
@@ -404,10 +405,7 @@ public class Boss : MonoBehaviour
 
 
         if (Animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
-            if (slamSound != null)
-            {
-                AudioHelper.PlayClip2D(slamSound, 1f);
-            }
+           /*
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, 3);
                 foreach (var hitCollider in hitColliders)
                 {
@@ -421,6 +419,7 @@ public class Boss : MonoBehaviour
 
                
             }
+           */
             int randMinion = Random.Range(1, 3);
             
             SpawnMinons(randMinion);
@@ -434,7 +433,7 @@ public class Boss : MonoBehaviour
     {
         
 
-
+    /*
         if (!playerHit)
         {
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, 3);
@@ -450,6 +449,7 @@ public class Boss : MonoBehaviour
 
             }
         }
+    */
         if (Animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
 
@@ -464,7 +464,7 @@ public class Boss : MonoBehaviour
   
         //Is he Hungry -> less than half health?
         //yes
-        if (curHealth < maxHealth / 2)
+        if (curHealth < maxHealth*ragePercent)
         {
             //Is there food
             //yes
@@ -508,16 +508,17 @@ public class Boss : MonoBehaviour
                             AudioHelper.PlayClip2D(targetSound, 1f);
                         }
                     } else { curTarget.transform.position = currentMinion.transform.position; }
-                        if (agent.remainingDistance <= 1){
-                        if (eatSound != null)
-                        {
-                            AudioHelper.PlayClip2D(eatSound, 1f);
-                        }
-                        playerHit = false;
+                        if (agent.remainingDistance <= 3){
+                     
+                            playerHit = false;
                             Destroy(curTarget);
                             Destroy(currentMinion);
                             MinionList.Remove(currentMinion);
-                            Debug.Log(MinionList.Count);
+                        if (eatSound != null)
+                        {
+                            AudioHelper.PlayClip2D(targetSound, 1f);
+                        }
+                        Debug.Log(MinionList.Count);
                             health.ChangeHealth(1);
                             curHealth = Mathf.Clamp(curHealth, 0, maxHealth / 2);
                             ChangeAction("Idle", .5f);
@@ -563,7 +564,7 @@ public class Boss : MonoBehaviour
         if (Animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
             
-            if (HealthBarBack) { HealthBarBack.SetActive(false); }
+            if (HealthBarBack) { HealthBarBack.sizeDelta = new Vector2(800*ragePercent,100); }
             bossCol.enabled = !bossCol.enabled;
             
             playerHit = false;
@@ -602,7 +603,7 @@ public class Boss : MonoBehaviour
     }
 
 
-    void HitPlayer(GameObject hitPlayer) {
+    public void HitPlayer(GameObject hitPlayer) {
 
 
         Health hp = hitPlayer.GetComponent<Health>();

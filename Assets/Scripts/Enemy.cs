@@ -25,9 +25,9 @@ public class Enemy : MonoBehaviour
     {
         hp = GetComponent<Health>();
         cameraShake = Camera.main.GetComponent<CameraShake>();
-        agent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
         Player = GameObject.Find("Player");
-        agent.speed = speed;
+        //agent.speed = speed;
         //agent.destination = (Player.transform.position);
         //agent.baseOffset = 0;
 
@@ -52,6 +52,13 @@ public class Enemy : MonoBehaviour
 
         }
 
+        if (other.gameObject.tag == "Floor" && !agent) {
+
+            agent = gameObject.AddComponent<NavMeshAgent>();
+            agent.speed = speed;
+            rb.isKinematic = true;
+
+        }
     }
     /*
     protected virtual void PlayerImpact(Player player) {
@@ -72,15 +79,15 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (agent.baseOffset > 0.6f)
+        if (agent)
         {
-            agent.baseOffset = Mathf.Lerp(agent.baseOffset, 0.5f, .05f);
+            Move();
 
 
         }
 
 
-        else { Move(); }
+       
         
     }
     public void Move()

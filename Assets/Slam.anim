@@ -1050,4 +1050,25 @@ AnimationClip:
     script: {fileID: 0}
   m_HasGenericRootTransform: 1
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 1.15
+    functionName: HitCheck
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 7
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.15
+    functionName: ParticleEffect
+    data: 
+    objectReferenceParameter: {fileID: 3103269325493863606, guid: 65f952c6e4d7c2349a13c4a2d5bf33f5, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.15
+    functionName: SoundAction
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: d96ce6835e4973942b3daa63cbbe5d64, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

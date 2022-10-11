@@ -1715,4 +1715,18 @@ AnimationClip:
     script: {fileID: 0}
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 1.05
+    functionName: ParticleEffect
+    data: 
+    objectReferenceParameter: {fileID: 1272563649054336419, guid: 1a66e4e83d6a8bc4e8dc671e6dcd288c, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.05
+    functionName: SoundAction
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: b5fa023e7ac99004b9e68a44b9fa618b, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

@@ -30,6 +30,7 @@ public class Boss : MonoBehaviour
     [SerializeField] GameObject targetImage = null;
     [SerializeField] RectTransform HealthBarBack = null;
     [SerializeField] CameraShake cameraShake;
+    [SerializeField] BossSounds BossSounds;
     //hidden variables
     //set through code
     public GameObject curTarget;
@@ -63,12 +64,14 @@ public class Boss : MonoBehaviour
     [Header("Swiping Settings")]
     [SerializeField] int SwipingWeight = 1;
     [SerializeField] float SwipingTime = 1;
+    [SerializeField] int swipeDamage = 1;
     //[SerializeField] AudioClip swipeSound;
     MoveData Swipe;
     [Header("Slam Settings")]
     [SerializeField] int SlamWeightClose = 1;
     [SerializeField] int SlamWeightFar = 1;
     [SerializeField] float SlamTime = 1;
+    [SerializeField] int slamDamage = 1;
     //[SerializeField] AudioClip slamSound;
     MoveData Slam;
 
@@ -76,6 +79,7 @@ public class Boss : MonoBehaviour
     [Header("Charging Settings")]
     [SerializeField] int ChargingWeight = 1;
     [SerializeField] float ChargingTime = 1;
+    [SerializeField] int chargeDamage = 1;
     MoveData Charge;
     [Header("Eat Settings")]
     [SerializeField] int EatWeight = 1;
@@ -134,7 +138,13 @@ public class Boss : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Debug.Log("Colliding with: " +collision.gameObject.name );
+        if (collision.gameObject.name == "Player")
+        {
+            Debug.Log("PLAYER Collided");
+            HitPlayer(collision.gameObject, damage);
+            
+
+        }
         if (BossState == "Charging")
         {
             Debug.Log("Collided while Charging");
@@ -142,7 +152,7 @@ public class Boss : MonoBehaviour
             if (collision.gameObject.name == "Player")
             {
                 Debug.Log("PLAYER Collided");
-                HitPlayer(collision.gameObject);
+                HitPlayer(collision.gameObject, chargeDamage);
                 ChangeAction("Idle", 0f);
                 if (curTarget != null) { Destroy(curTarget); }
 
@@ -400,7 +410,7 @@ public class Boss : MonoBehaviour
     //attack related
     void Slamming()
     {
-
+        BossSounds.damage = slamDamage;
       
 
 
@@ -431,25 +441,25 @@ public class Boss : MonoBehaviour
     }
     void Swiping()
     {
-        
+        BossSounds.damage = swipeDamage;
 
-    /*
-        if (!playerHit)
-        {
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 3);
-            foreach (var hitCollider in hitColliders)
+        /*
+            if (!playerHit)
             {
-                if (hitCollider.gameObject.name == "Player")
+                Collider[] hitColliders = Physics.OverlapSphere(transform.position, 3);
+                foreach (var hitCollider in hitColliders)
                 {
-                    Debug.Log("PLAYER HIT");
-                    HitPlayer(hitCollider.gameObject);
-                    playerHit = true;
+                    if (hitCollider.gameObject.name == "Player")
+                    {
+                        Debug.Log("PLAYER HIT");
+                        HitPlayer(hitCollider.gameObject);
+                        playerHit = true;
+
+                    }
 
                 }
-
             }
-        }
-    */
+        */
         if (Animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
 
@@ -603,13 +613,13 @@ public class Boss : MonoBehaviour
     }
 
 
-    public void HitPlayer(GameObject hitPlayer) {
+    public void HitPlayer(GameObject hitPlayer,int dmg) {
 
 
         Health hp = hitPlayer.GetComponent<Health>();
         if (hp != null){
             
-            hp.ChangeHealth(-damage);
+            hp.ChangeHealth(-dmg);
             if (cameraShake) {
                 StartCoroutine(cameraShake.Shake(.5f, .1f)); 
            

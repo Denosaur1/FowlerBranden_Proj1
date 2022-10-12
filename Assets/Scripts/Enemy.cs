@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.UI;
+
 using UnityEngine;
 using UnityEngine.AI;
 using static UnityEngine.GraphicsBuffer;
@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] AudioClip impactSound;
     [SerializeField] CameraShake cameraShake;
     GameObject Player;
+    GameObject Boss;
    
     Rigidbody rb;
     Health hp;
@@ -27,6 +28,7 @@ public class Enemy : MonoBehaviour
         cameraShake = Camera.main.GetComponent<CameraShake>();
         rb = GetComponent<Rigidbody>();
         Player = GameObject.Find("Player");
+        Boss = GameObject.Find("Boss");
         //agent.speed = speed;
         //agent.destination = (Player.transform.position);
         //agent.baseOffset = 0;
@@ -79,13 +81,21 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (agent)
+        Player = GameObject.Find("Player");
+        Boss = GameObject.Find("Boss");
+
+        if (!Player || !Boss)
         {
-            Move();
-
-
+            Destroy(this);
+        
         }
+        else if (agent)
+            {
+                Move();
 
+
+            }
+        
 
        
         
